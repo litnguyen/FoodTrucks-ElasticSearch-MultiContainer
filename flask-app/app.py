@@ -16,16 +16,16 @@ def load_data_in_es():
     data = r.json()
     print("Loading data in elasticsearch ...")
     for id, truck in enumerate(data):
-        res = es.index(index="sfdata", doc_type="truck", id=id, body=truck)
+        res = es.index(index="sfdata", id=id, document=truck)
     print("Total trucks loaded: ", len(data))
 
-def safe_check_index(index, retry=3):
+def safe_check_index(index, retry=10):
     """ connect to ES with retry """
     if not retry:
         print("Out of retries. Bailing out...")
         sys.exit(1)
     try:
-        status = es.indices.exists(index)
+        status = es.indices.exists(index=index)
         return status
     except exceptions.ConnectionError as e:
         print("Unable to connect to ES. Retrying in 5 secs...")
